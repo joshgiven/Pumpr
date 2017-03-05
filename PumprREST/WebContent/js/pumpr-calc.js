@@ -5,13 +5,16 @@ var PumprCalc = (function(){
   calc.calcDerivedProps = function(fillups) {
     // ['miles', 'cost', 'mpg', 'costPerMile']
 
-    var prevFill = null;
-    _.sortBy(fillups, 'date').forEach((fill) => {
-      if(prevFill !== null) {
-        fill.miles = fill.odometer - prevFill.odometer;
+    fillups = _.sortBy(fillups, 'date');
+    for(var i=0; i < fillups.length; i++) {
+      fill = fillups[i];
+      nextfill = fillups[i+1];
+
+      if(nextfill) {
+        fill.miles = nextfill.odometer - fill.odometer;
         if(fill.miles < 0) {
           delete fill.miles;
-          throw 'bad odometer value';
+          //throw 'bad odometer value';
         }
       }
 
@@ -21,12 +24,36 @@ var PumprCalc = (function(){
         fill.mpg = fill.miles / fill.gallons;
         fill.costPerMile = fill.cost / fill.miles;
       }
-
-      prevFill = fill;
-    });
+    }
 
     return fillups;
   };
+
+  // calc.calcDerivedProps = function(fillups) {
+  //   // ['miles', 'cost', 'mpg', 'costPerMile']
+  //
+  //   var prevFill = null;
+  //   _.sortBy(fillups, 'date').forEach((fill) => {
+  //     if(prevFill !== null) {
+  //       fill.miles = fill.odometer - prevFill.odometer;
+  //       if(fill.miles < 0) {
+  //         delete fill.miles;
+  //         throw 'bad odometer value';
+  //       }
+  //     }
+  //
+  //     fill.cost = fill.gallons * fill.dollarsPerGallon;
+  //
+  //     if(fill.miles) {
+  //       fill.mpg = fill.miles / fill.gallons;
+  //       fill.costPerMile = fill.cost / fill.miles;
+  //     }
+  //
+  //     prevFill = fill;
+  //   });
+  //
+  //   return fillups;
+  // };
 
 
   calc.calcFillupStats = function(fillups) {

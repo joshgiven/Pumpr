@@ -15,6 +15,10 @@
 <!-- Underscore -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
+
 <!-- Bootstrap -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -22,6 +26,10 @@
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
     integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
     crossorigin="anonymous"> -->
+
+<!-- datepicker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
 
 <!-- Pumpr -->
 <script src="./js/pumpr-rest.js" charset="utf-8"></script>
@@ -37,23 +45,42 @@
 <div class='container'>
 
   <div>
-    <nav class='navbar navbar-inverse'>
-      <div class='navbar-brand'>
-        <span>Pumpr</span>
-      </div>
-      <div>
+    <nav class='navbar navbar-default'>
+      <div class="container-fluid">
+        <div class='navbar-brand'>
+          <span>Pumpr</span>
+        </div>
+        <p class='navbar-text'>pumpin' for the man</p>
         <ul class='nav nav-pills'>
-          <li class='active clickable' id='list'>List</li>
-          <li class='clickable' id='new'>New</li>
-          <li class='clickable' id='chart'>Chart</li>
+          <li role="presentation" id='stats'><a href="#Stats">Stats</a></li>
+          <li role="presentation" class='active' id='list'><a href="#List">List</a></li>
+          <li role="presentation" id='new'><a href="#New">New</a></li>
+          <li role="presentation" id='charts'><a href="#Charts">Charts</a></li>
         </ul>
+        <!-- <div>
+        </div> -->
       </div>
     </nav>
   </div>
 
-  <div id='pumprTable'></div>
-  <div id='pumprForm'></div>
-  <canvas id='pumprChart'></canvas>
+  <div>
+  </div>
+
+  <div id='pumprStats'><p>Not Yet Implemented</p></div>
+  <div id='pumprTable'><p>Loading...</p></div>
+  <div id='pumprForm' style='width:35%;'></div>
+
+  <div id='pumprCharts' style='width:75%;'>
+    <ul class="nav nav-tabs">
+      <li role="presentation" class='active' id='chartTab1'><a href="#Chart1">Chart 1</a></li>
+      <li role="presentation" id='chartTab2'><a href="#Chart2">Chart 2</a></li>
+      <li role="presentation" id='chartTab3'><a href="#Chart3">Chart 3</a></li>
+    </ul>
+
+    <canvas id='chart1'></canvas>
+    <canvas id='chart2'></canvas>
+    <canvas id='chart3'></canvas>
+  </div>
   <!--
   <div id='test'>
   <a href='rest/ping'>ping</a>

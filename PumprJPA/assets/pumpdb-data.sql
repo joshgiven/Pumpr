@@ -1,6 +1,22 @@
 use pumpdb;
 
-insert into fillup values (1, '2017-02-01', 10.9, 2.599, 101230.1, 'Shell');
-insert into fillup values (2, '2017-02-08', 12.9, 2.699, 101531.2, 'Conoco');
-insert into fillup values (3, '2017-02-13', 11.1, 2.639, 101840.3, 'Shell');
-insert into fillup values (4, '2017-02-22', 10.8, 2.459, 102130.4, '7-11');
+insert into fillup values (1,  '2017-02-01', 10.9, 2.599, 101230.1, 'Shell');
+insert into fillup values (2,  '2017-02-08', 12.9, 2.699, 101531.2, 'Conoco');
+insert into fillup values (3,  '2017-02-13', 11.1, 2.639, 101840.3, 'Shell');
+insert into fillup values (4,  '2017-02-22', 10.8, 2.559, 102130.4, '7-11');
+insert into fillup values (5,  '2017-03-01', 10.9, 2.599, 102419.5, 'Shell');
+insert into fillup values (6,  '2017-03-08', 12.9, 2.639, 102730.6, 'Conoco');
+insert into fillup values (7,  '2017-03-13', 11.1, 2.629, 103028.7, 'Shell');
+insert into fillup values (8,  '2017-03-22', 10.8, 2.649, 103335.8, 'Shell');
+insert into fillup values (9,  '2017-04-01', 10.9, 2.599, 103650.9, 'Shell');
+insert into fillup values (10, '2017-04-08', 12.9, 2.699, 103962.0, 'Conoco');
+insert into fillup values (11, '2017-04-13', 11.1, 2.639, 104258.1, 'Shell');
+insert into fillup values (12, '2017-04-22', 10.8, 2.559, 104530.2, '7-11');
+insert into fillup values (13, '2017-05-01', 10.9, 2.549, 104818.3, 'Shell');
+insert into fillup values (14, '2017-05-08', 12.9, 2.499, 105131.4, 'Conoco');
+insert into fillup values (15, '2017-05-13', 11.1, 2.539, 105440.5, 'Shell');
+insert into fillup values (16, '2017-05-22', 10.8, 2.559, 105765.6, 'Shell');
+insert into fillup values (17, '2017-06-01', 10.9, 2.499, 106040.7, 'Shell');
+insert into fillup values (18, '2017-06-08', 12.9, 2.489, 106331.8, 'Conoco');
+insert into fillup values (19, '2017-06-13', 11.1, 2.539, 106642.9, 'Shell');
+insert into fillup values (20, '2017-06-22', 10.8, 2.589, 106930.0, 'Shell');
