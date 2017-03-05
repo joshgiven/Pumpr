@@ -52,7 +52,8 @@ var PumprApp = (function() {
     PumprUI.editCallback((fillup) => {
       form.updateFillup(fillup, (oldFillup, newFillup) => {
         PumprREST.update(oldFillup.id, newFillup, () => {
-          table.refresh();
+          //table.refresh();
+          $('#list').trigger('click');
         });
       });
     });
@@ -60,7 +61,8 @@ var PumprApp = (function() {
     PumprUI.deleteCallback((fillup) => {
       if(confirm('Really?')) {
         PumprREST.destroy(fillup.id, () => {
-          table.refresh();
+          //table.refresh();
+          $('#list').trigger('click');
         });
       }
     });
@@ -78,7 +80,8 @@ var PumprApp = (function() {
 
       $('#pumprForm').append(PumprUI.form(null, 'createForm', (fillup) => {
         PumprREST.create(fillup, (newFill) => {
-          callback(newFill);
+          //table.refresh();
+          $('#list').trigger('click');
         });
       }));
     };
@@ -105,6 +108,7 @@ var PumprApp = (function() {
       $('#pumprTable').children().remove();
 
       PumprREST.index((fills) => {
+        fills = PumprCalc.calcDerivedProps(fills);
         $('#pumprTable').append(PumprUI.table(fills, tableId));
       });
     };
