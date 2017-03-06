@@ -21,14 +21,6 @@ var PumprUI = (function() {
     if(!fillup)
       fillup = {};
 
-    // [
-    //   $('<input>').attr('type', 'input').attr('placeholder', propDisplay[prop]).val(fillup[prop]), //.datepicker(),
-    //   $('<input>').attr('type', 'input').val(fillup.gallons),
-    //   $('<input>').attr('type', 'input').val(fillup.dollarsPerGallon),
-    //   $('<input>').attr('type', 'input').val(fillup.odometer),
-    //   $('<input>').attr('type', 'input').val(fillup.comments),
-    // ];
-
     $elems = formProps.map((prop) => {
       //console.log(prop);
       return $('<input>').attr('type', 'input')
@@ -49,7 +41,6 @@ var PumprUI = (function() {
 
     var $form = $('<form>').attr('id',formId);
     $elems.forEach(($elem) => {
-      // $form.append($elem, $('<br>'));
       $form.append($elem);
     });
 
@@ -89,32 +80,19 @@ var PumprUI = (function() {
         $('<button>').text('delete')
                      .addClass('btn btn-danger')
                      .click((e) => deleteFunction(fill) )
-        // $('<button>').text('edit').click((e) => { console.log(fill.id); }),
-        // $('<button>').text('delete').click((e) => { console.log(fill.id); })
       );
 
       $tbody.append($tr);
     });
 
     var $table = $('<table>').attr('id', tableId)
-                             .addClass('table')
+                             .addClass('table table-striped table-hover')
                              .append($thead, $tbody);
-
-    //$thead.css('border', '1px solid black');
-    // .css('border-spacing', '0')
-    // .css('border-collapse', 'collapse')
-    //$('#'+ tableId +' tbody tr:nth-child(odd)').css('background', 'Azure');
-    //$('tbody tr:nth-child(odd)').css('background', 'Azure');
 
     return $table;
   };
 
   var fillupsToChart = function(fillups, stats) {
-
-    // fillup props
-    // [ 'date', 'gallons', 'dollarsPerGallon', 'cost', 'odometer',
-    //             'miles', 'mpg', 'costPerMile', 'comments' ];
-
     var grabem = function(fills, prop) {
       return fills.reduce((arr, fill) => {
         arr.push(fill[prop]);
@@ -123,46 +101,39 @@ var PumprUI = (function() {
     };
 
     var dates = grabem(fillups, 'date');
-    var dpgs  = grabem(fillups, 'dollarsPerGallon').map((dpg) => propDisplay['dollarsPerGallon'].fmt(dpg));
-    var cpms  = grabem(fillups, 'costPerMile').map((cpm) => propDisplay['costPerMile'].fmt(cpm));
 
-    // stats
-    // ['gallons', 'miles', 'cost', 'mpg', 'costPerMile'] x [hi, lo, sum, avg]
+    var dpgs  = grabem(fillups, 'dollarsPerGallon').map((dpg) => propDisplay.dollarsPerGallon.fmt(dpg));
+    lineGraphIt($('#chart1'), propDisplay.dollarsPerGallon.header, dates, dpgs);
+
+    var cpms  = grabem(fillups, 'costPerMile').map((cpm) => propDisplay.costPerMile.fmt(cpm));
+    lineGraphIt($('#chart2'), propDisplay.costPerMile.header, _.initial(dates), _.initial(cpms));
+
+    var mpgs  = grabem(fillups, 'mpg').map((x) => propDisplay.mpg.fmt(x));
+    lineGraphIt($('#chart3'), propDisplay.mpg.header, _.initial(dates), _.initial(mpgs));
+
+    $('#chart1, #chart2, #chart3').hide();
+  };
+
+  var lineGraphIt = function(ctx, desc, dates, dataPoints) {
+    //"rgba(75,192,192,0.4)"
+    var randomColor = (function(){
+      var r = _.random(0, 255);
+      var g = _.random(0, 255);
+      var b = _.random(0, 255);
+      var a = '0.' + _.random(1, 9);
+      return 'rgba('+ [r,g,b,a].join(',') +')';
+    })();
 
     var data = {
-        //labels: ["January", "February", "March", "April", "May", "June", "July"],
         labels: dates,
         datasets: [
             {
-                label: "pump ($/gal)",
+                label: desc,
                 fill: false,
-                // lineTension: 0.1,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                // borderColor: "rgba(75,192,192,1)",
-                // borderCapStyle: 'butt',
-                // borderDash: [],
-                // borderDashOffset: 0.0,
-                // borderJoinStyle: 'miter',
-                // pointBorderColor: "rgba(75,192,192,1)",
-                // pointBackgroundColor: "#fff",
-                // pointBorderWidth: 1,
-                // pointHoverRadius: 5,
-                // pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                // pointHoverBorderColor: "rgba(220,220,220,1)",
-                // pointHoverBorderWidth: 2,
-                // pointRadius: 1,
-                // pointHitRadius: 10,
-                ///data: [65, 59, 80, 81, 56, 55, 40],
-                data: dpgs,
-                // spanGaps: false,
-                //maintainAspectRatio: true,
-                //responsize: true,
+                //backgroundColor: "rgba(75,192,192,0.4)",
+                backgroundColor: randomColor,
+                data: dataPoints,
             },
-            // {
-            //   label: "cost ($/mi)",
-            //   fill: false,
-            //   data: cpms,
-            // }
         ]
     };
 
@@ -181,23 +152,15 @@ var PumprUI = (function() {
                     beginAtZero:false
                 }
             },
-            // {
-            //   ticks: {
-            //       beginAtZero:false
-            //   }
-            //}
           ]
         }
     };
-
-    var ctx = $('#chart1'); //.width(800).height(800);
 
     var myLineChart = new Chart(ctx, {
       type: 'line',
       data: data,
       options: options
     });
-
   };
 
   var defaultCallback = function(fillup) { console.log(fillup.id); };
@@ -229,14 +192,3 @@ var PumprUI = (function() {
   };
 
 })();
-
-
-
-/*
-
-
-  this space intentionally left blank
-
-
-
-*/

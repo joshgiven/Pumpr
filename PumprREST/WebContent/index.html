@@ -37,26 +37,27 @@
 <script src="./js/pumpr-ui.js" charset="utf-8"></script>
 <script src="./js/app.js" charset="utf-8"></script>
 
+<!-- some fonts -->
+<link href="https://fonts.googleapis.com/css?family=Monofett" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Slackey" rel="stylesheet">
+
 <title>Pumpr</title>
 
 </head>
 <body>
 
 <div class='container'>
-
   <div>
     <nav class='navbar navbar-default'>
       <div class="container-fluid">
         <div class='navbar-brand'>
-          <span>Pumpr</span>
+          <span style="font-family: 'Monofett', cursive;font-size:100px;">Pumpr</span>
         </div>
-        <p class='navbar-text'>pumpin' for the man</p>
-        <ul class='nav nav-pills'>
-          <li role="presentation" id='stats'><a href="#Stats">Stats</a></li>
-          <li role="presentation" class='active' id='list'><a href="#List">List</a></li>
-          <li role="presentation" id='new'><a href="#New">New</a></li>
-          <li role="presentation" id='charts'><a href="#Charts">Charts</a></li>
-        </ul>
+        <!-- <p class='navbar-text'>no one rides for free</p> -->
+        <!-- <blockquote class="blockquote-reverse"><p>no one rides for free</p></blockquote> -->
+        <blockquote class="navbar-text blockquote">
+          <p style="font-family: 'Slackey', cursive;font-size:23px;">no one rides for free</p>
+        </blockquote>
         <!-- <div>
         </div> -->
       </div>
@@ -64,10 +65,19 @@
   </div>
 
   <div>
+    <ul class='nav nav-pills'>
+      <li role="presentation" id='stats'><a href="#Stats">Stats</a></li>
+      <li role="presentation" class='active' id='list'><a href="#List">List</a></li>
+      <li role="presentation" id='new'><a href="#New">New</a></li>
+      <li role="presentation" id='charts'><a href="#Charts">Charts</a></li>
+      <li role="presentation" id='test'><a href="#Test">REST</a></li>
+    </ul>
   </div>
 
   <div id='pumprStats'><p>Not Yet Implemented</p></div>
+
   <div id='pumprTable'><p>Loading...</p></div>
+
   <div id='pumprForm' style='width:35%;'></div>
 
   <div id='pumprCharts' style='width:75%;'>
@@ -81,13 +91,14 @@
     <canvas id='chart2'></canvas>
     <canvas id='chart3'></canvas>
   </div>
-  <!--
-  <div id='test'>
-  <a href='rest/ping'>ping</a>
-  <a href='rest/fillups'>index</a>
-  <a href='rest/fillups/1'>show</a>
+
+  <div id='pumprTest'>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href='rest/ping'>ping</a></li>
+      <li><a href='rest/fillups'>index</a></li>
+      <li><a href='rest/fillups/1'>show</a></li>
+    </ul>
   </div>
-  -->
 </div>
 
 </body>

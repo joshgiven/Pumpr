@@ -1,7 +1,6 @@
-$(document).ready(function(){
+$(document).ready(function() {
     console.log('LOADED');
     PumprApp.init();
-    //PumprApp.exec();
 });
 
 
@@ -10,13 +9,15 @@ var PumprApp = (function() {
   var form = null;
 
   var hideAll = function() {
-    $('#pumprStats, #pumprTable, #pumprForm, #pumprCharts').hide();
-    $('#stats, #list, #new, #charts').removeClass('active');
+    $('#pumprStats, #pumprTable, #pumprForm, #pumprCharts, #pumprTest').hide();
+    $('#stats, #list, #new, #charts, #test').removeClass('active');
   };
 
   var displayStats = function() {
     hideAll();
-    //table.refresh();
+
+    // do something
+
     $('#pumprStats').show();
     $('#stats').addClass('active');
   };
@@ -39,22 +40,38 @@ var PumprApp = (function() {
   var displayEditForm = function(fillup) {
     hideAll();
     form.doUpdate(fillup);
-    $('#pumprTable').show(); //?
+    $('#pumprTable').show();
     $('#pumprForm').show();
     $('#list').addClass('active');
     location.href = "#pumprForm";
   };
 
+  var displayDestroyConfirm = function(fillup) {
+    if(confirm('Really?')) {
+      PumprREST.destroy(fillup.id, () => {
+        //table.refresh();
+        $('#list').trigger('click');
+      });
+    }
+  };
+
   var displayChart = function() {
     hideAll();
-    // ???
+
     PumprREST.index((fills) => {
       fills = PumprCalc.calcDerivedProps(fills);
       PumprUI.chart(fills, PumprCalc.calcFillupStats(fills));
+      $('#chartTab1').trigger('click');
     });
 
     $('#pumprCharts').show();
     $('#charts').addClass('active');
+  };
+
+  var displayTest = function() {
+    hideAll();
+    $('#pumprTest').show();
+    $('#test').addClass('active');
   };
 
   var setupHandlers = function(){
@@ -63,7 +80,6 @@ var PumprApp = (function() {
       });
 
       $('#stats').click((e) => {
-        //console.log('click stats');
         displayStats();
       });
 
@@ -74,20 +90,16 @@ var PumprApp = (function() {
       $('#charts').click((e) => {
         displayChart();
       });
+
+      $('#test').click((e) => {
+        displayTest();
+      });
   };
 
   var setupChartHandlers = function() {
-    //'#chartTab1','#chartTab2','#chartTab3'
-    //'#chart1','#chart2','#chart3'
-
     $('#chartTab1').click((e) => {
       $('#chart1, #chart2, #chart3').hide();
       $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
-
-      PumprREST.index(function(fills) {
-        fills = PumprCalc.calcDerivedProps(fills);
-        PumprUI.chart(fills, PumprCalc.calcFillupStats(fills));
-      });
 
       $('#chart1').show();
       $('#chartTab1').addClass('active');
@@ -97,9 +109,6 @@ var PumprApp = (function() {
       $('#chart1, #chart2, #chart3').hide();
       $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
 
-
-      // gen chart
-
       $('#chart2').show();
       $('#chartTab2').addClass('active');
     });
@@ -108,33 +117,18 @@ var PumprApp = (function() {
       $('#chart1, #chart2, #chart3').hide();
       $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
 
-      // gen chart
-
       $('#chart3').show();
       $('#chartTab3').addClass('active');
     });
-
   };
 
   var setupTableHandlers = function() {
     PumprUI.editCallback((fillup) => {
-      // form.doUpdate(fillup/*, (oldFillup, newFillup) => {
-      //   PumprREST.update(oldFillup.id, newFillup, () => {
-      //     //table.refresh();
-      //     $('#list').trigger('click');
-      //   });
-      // }*/);
-      // $('#pumprForm').show();
       displayEditForm(fillup);
     });
 
     PumprUI.deleteCallback((fillup) => {
-      if(confirm('Really?')) {
-        PumprREST.destroy(fillup.id, () => {
-          //table.refresh();
-          $('#list').trigger('click');
-        });
-      }
+      displayDestroyConfirm(fillup);
     });
   };
 
@@ -146,8 +140,6 @@ var PumprApp = (function() {
     table = TableWidget('fills');
     form = FormWidget();
 
-    //table.refresh();
-    //form.doCreate();
     $('#list').trigger('click');
   };
 
@@ -177,7 +169,6 @@ var PumprApp = (function() {
     };
 
     return {
-      //formId : () => formId,
       doCreate : create,
       doUpdate : update,
     };
@@ -190,11 +181,19 @@ var PumprApp = (function() {
         fills = PumprCalc.calcDerivedProps(fills);
         $('#pumprTable').children().remove();
         $('#pumprTable').append(PumprUI.table(fills, tableId));
+
+        $('td[name=mpg],td[name=miles],td[name=costPerMile]')
+          .addClass('success')
+          //.css('color','rgb(119, 6, 208)')
+          .css('font-weight','bold');
+
+        //$('tbody tr:nth-child(odd)').css('background', 'Azure');
+
+        $('.navbar p').addClass('text-right');
       });
     };
 
     return {
-      tableId : () => tableId,
       refresh : refresh,
     };
   };

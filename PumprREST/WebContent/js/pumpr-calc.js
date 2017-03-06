@@ -3,8 +3,6 @@ var PumprCalc = (function(){
   var calc = {};
 
   calc.calcDerivedProps = function(fillups) {
-    // ['miles', 'cost', 'mpg', 'costPerMile']
-
     fillups = _.sortBy(fillups, 'date');
     for(var i=0; i < fillups.length; i++) {
       fill = fillups[i];
@@ -28,33 +26,6 @@ var PumprCalc = (function(){
 
     return fillups;
   };
-
-  // calc.calcDerivedProps = function(fillups) {
-  //   // ['miles', 'cost', 'mpg', 'costPerMile']
-  //
-  //   var prevFill = null;
-  //   _.sortBy(fillups, 'date').forEach((fill) => {
-  //     if(prevFill !== null) {
-  //       fill.miles = fill.odometer - prevFill.odometer;
-  //       if(fill.miles < 0) {
-  //         delete fill.miles;
-  //         throw 'bad odometer value';
-  //       }
-  //     }
-  //
-  //     fill.cost = fill.gallons * fill.dollarsPerGallon;
-  //
-  //     if(fill.miles) {
-  //       fill.mpg = fill.miles / fill.gallons;
-  //       fill.costPerMile = fill.cost / fill.miles;
-  //     }
-  //
-  //     prevFill = fill;
-  //   });
-  //
-  //   return fillups;
-  // };
-
 
   calc.calcFillupStats = function(fillups) {
     var stats = {};
@@ -80,7 +51,6 @@ var PumprCalc = (function(){
     retVals[prop + 'Sum'] = 0;
 
     fillups.forEach((fill) => {
-      //if(isNaN(fill[prop]))
       if(fill[prop] !== null && !isNaN(fill[prop])) {
         if(retVals[prop + 'Hi'] === undefined || fill[prop] > retVals[prop + 'Hi']) {
           retVals[prop + 'Hi'] = fill[prop];
@@ -89,7 +59,6 @@ var PumprCalc = (function(){
         if(retVals[prop + 'Lo'] === undefined || fill[prop] < retVals[prop + 'Lo']) {
           retVals[prop + 'Lo'] = fill[prop];
         }
-        //retVals[prop + 'Hi'] = (fill[prop] > retVals[prop + 'Hi']) ? fill[prop] : retVals[prop + 'Hi'];
 
         retVals[prop + 'Sum'] += fill[prop];
         n += 1;
