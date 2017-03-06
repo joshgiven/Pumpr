@@ -1,7 +1,6 @@
-$(document).ready(function(){
+$(document).ready(function() {
     console.log('LOADED');
     PumprApp.init();
-    //PumprApp.exec();
 });
 
 
@@ -10,107 +9,191 @@ var PumprApp = (function() {
   var form = null;
 
   var hideAll = function() {
-    $('#pumprTable, #pumprForm, #pumprChart').hide();
-    $('#list, #new, #chart').removeClass('active');
+    $('#pumprStats, #pumprTable, #pumprForm, #pumprCharts, #pumprTest').hide();
+    $('#stats, #list, #new, #charts, #test').removeClass('active');
+  };
+
+  var displayStats = function() {
+    hideAll();
+
+    // do something
+
+    $('#pumprStats').show();
+    $('#stats').addClass('active');
   };
 
   var displayTable = function() {
+    hideAll();
+    table.refresh();
     $('#pumprTable').show();
     $('#list').addClass('active');
   };
 
   var displayForm = function() {
+    hideAll();
+    form.doCreate();
+    //$('#pumprTable').show(); //?
     $('#pumprForm').show();
     $('#new').addClass('active');
   };
 
-  var displayChart = function() {
-    $('#pumprChart').show();
-    $('#chart').addClass('active');
+  var displayEditForm = function(fillup) {
+    hideAll();
+    form.doUpdate(fillup);
+    $('#pumprTable').show();
+    $('#pumprForm').show();
+    $('#list').addClass('active');
+    location.href = "#pumprForm";
   };
 
-  var init = function() {
-
-    $('#list').click((e) => {
-      hideAll();
-      table.refresh();
-      displayTable();
-    });
-
-    $('#new').click((e) => {
-      hideAll();
-      form.createFillup();
-      displayForm();
-    });
-
-    $('#charts').click((e) => {
-      hideAll();
-      // ???
-      displayChart();
-    });
-
-    PumprUI.editCallback((fillup) => {
-      form.updateFillup(fillup, (oldFillup, newFillup) => {
-        PumprREST.update(oldFillup.id, newFillup, () => {
-          table.refresh();
-        });
+  var displayDestroyConfirm = function(fillup) {
+    if(confirm('Really?')) {
+      PumprREST.destroy(fillup.id, () => {
+        //table.refresh();
+        $('#list').trigger('click');
       });
+    }
+  };
+
+  var displayChart = function() {
+    hideAll();
+
+    PumprREST.index((fills) => {
+      fills = PumprCalc.calcDerivedProps(fills);
+      PumprUI.chart(fills, PumprCalc.calcFillupStats(fills));
+      $('#chartTab1').trigger('click');
+    });
+
+    $('#pumprCharts').show();
+    $('#charts').addClass('active');
+  };
+
+  var displayTest = function() {
+    hideAll();
+    $('#pumprTest').show();
+    $('#test').addClass('active');
+  };
+
+  var setupHandlers = function(){
+      $('#list').click((e) => {
+        displayTable();
+      });
+
+      $('#stats').click((e) => {
+        displayStats();
+      });
+
+      $('#new').click((e) => {
+        displayForm();
+      });
+
+      $('#charts').click((e) => {
+        displayChart();
+      });
+
+      $('#test').click((e) => {
+        displayTest();
+      });
+  };
+
+  var setupChartHandlers = function() {
+    $('#chartTab1').click((e) => {
+      $('#chart1, #chart2, #chart3').hide();
+      $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
+
+      $('#chart1').show();
+      $('#chartTab1').addClass('active');
+    });
+
+    $('#chartTab2').click((e) => {
+      $('#chart1, #chart2, #chart3').hide();
+      $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
+
+      $('#chart2').show();
+      $('#chartTab2').addClass('active');
+    });
+
+    $('#chartTab3').click((e) => {
+      $('#chart1, #chart2, #chart3').hide();
+      $('#chartTab1, #chartTab2, #chartTab3').removeClass('active');
+
+      $('#chart3').show();
+      $('#chartTab3').addClass('active');
+    });
+  };
+
+  var setupTableHandlers = function() {
+    PumprUI.editCallback((fillup) => {
+      displayEditForm(fillup);
     });
 
     PumprUI.deleteCallback((fillup) => {
-      if(confirm('Really?')) {
-        PumprREST.destroy(fillup.id, () => {
-          table.refresh();
-        });
-      }
+      displayDestroyConfirm(fillup);
     });
+  };
+
+  var init = function() {
+    setupHandlers();
+    setupTableHandlers();
+    setupChartHandlers();
 
     table = TableWidget('fills');
     form = FormWidget();
 
-    table.refresh();
-    //form.createFillup();
+    $('#list').trigger('click');
   };
 
   var FormWidget = function() {
-    var create = function(callback) {
+    var create = function(/*callback*/) {
       $('#pumprForm').children().remove();
 
       $('#pumprForm').append(PumprUI.form(null, 'createForm', (fillup) => {
         PumprREST.create(fillup, (newFill) => {
-          callback(newFill);
+          $('#list').trigger('click');
         });
       }));
+
+      $('input[name=date]').datepicker({format: "yyyy-mm-dd"});
     };
 
-    var update = function(oldFill, callback) {
+    var update = function(oldFill /*, callback*/) {
       $('#pumprForm').children().remove();
 
       $('#pumprForm').append(PumprUI.form(oldFill, 'updateForm', (fillup) => {
         PumprREST.update(oldFill.id, fillup, (newFill) => {
-          callback(oldFill, newFill);
+          $('#list').trigger('click');
         });
       }));
+
+      $('input[name=date]').datepicker({format: "yyyy-mm-dd"});
     };
 
     return {
-      //formId : () => formId,
-      createFillup : create,
-      updateFillup : update,
+      doCreate : create,
+      doUpdate : update,
     };
   };
 
   var TableWidget = function(tableId) {
     var refresh = function() {
-      $('#pumprTable').children().remove();
 
       PumprREST.index((fills) => {
+        fills = PumprCalc.calcDerivedProps(fills);
+        $('#pumprTable').children().remove();
         $('#pumprTable').append(PumprUI.table(fills, tableId));
+
+        $('td[name=mpg],td[name=miles],td[name=costPerMile]')
+          .addClass('success')
+          //.css('color','rgb(119, 6, 208)')
+          .css('font-weight','bold');
+
+        //$('tbody tr:nth-child(odd)').css('background', 'Azure');
+
+        $('.navbar p').addClass('text-right');
       });
     };
 
     return {
-      tableId : () => tableId,
       refresh : refresh,
     };
   };
